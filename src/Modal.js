@@ -234,20 +234,22 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
                     value={formData.article}
                     onChange={handleInputChange}
                   >
-                    {/* If formData.depot is not null, show it as a disabled option */}
                     {formData.article ? (
                       <option value={formData.article} disabled>
-                        {formData.article}
+                        {
+                          articles.find(
+                            (article) => article.id === formData.article
+                          )?.designation_article
+                        }
                       </option>
                     ) : (
-                      // Default placeholder option
                       <option value="" disabled>
                         Sélectionnez un article
                       </option>
                     )}
                     {articles.map((article) => (
                       <option key={article.id} value={article.id}>
-                        {`${article.designation_article}`}
+                        {article.designation_article}
                       </option>
                     ))}
                   </select>
@@ -312,22 +314,21 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
                     value={formData.depot}
                     onChange={handleInputChange}
                   >
-                    {/* If formData.depot is not null, show it as a disabled option */}
                     {formData.depot ? (
                       <option value={formData.depot} disabled>
-                        {formData.depot}
+                        {
+                          depots.find((depot) => depot.id === formData.depot)
+                            ?.nomDepot
+                        }
                       </option>
                     ) : (
-                      // Default placeholder option
                       <option value="" disabled>
                         Sélectionnez un dépôt
                       </option>
                     )}
-
-                    {/* Render the list of depots */}
                     {depots.map((depot) => (
                       <option key={depot.id} value={depot.id}>
-                        {`${depot.nomDepot}`}
+                        {depot.nomDepot}
                       </option>
                     ))}
                   </select>

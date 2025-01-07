@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css"; // Import the default style
 import { registerLocale, setLocale } from "react-datepicker"; // Import locale registration and setting
 import fr from "date-fns/locale/fr"; // Import the French locale
 import axios from "axios";
+import Swal from "sweetalert2";
 
 // Register the French locale with react-datepicker
 registerLocale("fr", fr);
@@ -75,8 +76,13 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
       ...prevState,
       [name]: value, // Mise à jour des données du formulaire
     }));
+
+    console.log("fel update chtara", formData);
   };
-  const updateArticle = async () => {
+
+  const updateArticle = async (e) => {
+    e.preventDefault();
+
     // Construire les données à envoyer pour la mise à jour
     const dataToSend = {
       articleId: formData.article, // Assurez-vous que `article` correspond bien à l'id de l'article
@@ -97,15 +103,27 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
 
       // Fermer la modale
       toggleModal();
+
+      // Afficher un message de succès avec SweetAlert
+      Swal.fire({
+        title: "Succès!",
+        text: "L'article a été mis à jour avec succès.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'article :", error);
-      alert(
-        "Une erreur est survenue lors de la mise à jour. Veuillez réessayer."
-      );
+
+      // Afficher un message d'erreur avec SweetAlert en cas d'échec
+      Swal.fire({
+        title: "Erreur!",
+        text: "Une erreur est survenue lors de la mise à jour de l'article. Veuillez réessayer.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
-  // Fonction pour soumettre le formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -129,9 +147,22 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
 
       // Fermer la modale
       toggleModal();
+
+      // Afficher un message de succès avec SweetAlert
+      Swal.fire({
+        title: "Succès!",
+        text: "Le stock a été ajouté avec succès.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
     } catch (error) {
-      /* console.error("Erreur lors de l'ajout des données :", error);
-      alert("Une erreur est survenue. Veuillez réessayer."); */
+      console.error("Erreur lors de l'ajout des données :", error);
+      Swal.fire({
+        title: "Erreur!",
+        text: "Une erreur est survenue. Veuillez réessayer.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -215,10 +246,7 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
                       </option>
                     )}
                     {articles.map((article) => (
-                      <option
-                        key={article.id}
-                        value={article.designation_article}
-                      >
+                      <option key={article.id} value={article.id}>
                         {`${article.designation_article}`}
                       </option>
                     ))}
@@ -298,7 +326,7 @@ const Modal = ({ toggleModal, selectedArticle, refreshArticles }) => {
 
                     {/* Render the list of depots */}
                     {depots.map((depot) => (
-                      <option key={depot.id} value={depot.nomDepot}>
+                      <option key={depot.id} value={depot.id}>
                         {`${depot.nomDepot}`}
                       </option>
                     ))}

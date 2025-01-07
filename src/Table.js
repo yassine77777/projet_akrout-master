@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import "./index.css";
+import Swal from "sweetalert2";
 
 import axios from "axios";
 
@@ -46,16 +47,31 @@ const Table = () => {
   );
 
   const removeArticle = (id) => {
-    axios
-      .delete(`http://localhost:8886/stocks/delete/${id}`) // Remplacez par l'URL correcte pour la suppression
-      .then(() => {
-        console.log("Article supprimé avec succès.");
-        refreshArticles(); // Met à jour la liste des articles après la suppression
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la suppression de l'article :", error);
-        setError("Erreur lors de la suppression de l'article");
-      });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, keep it",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Move the delete request here
+        axios
+          .delete(`http://localhost:8886/stocks/delete/${id}`)
+          .then(() => {
+            Swal.fire("Deleted!", "Your article has been deleted.", "success");
+            refreshArticles(); // Met à jour la liste des articles après la suppression
+          })
+          .catch((error) => {
+            console.error(
+              "Erreur lors de la suppression de l'article :",
+              error
+            );
+            setError("Erreur lors de la suppression de l'article");
+          });
+      }
+    });
   };
 
   const updateQuantity = (id, change) => {
@@ -87,8 +103,8 @@ const Table = () => {
         // Mettre à jour l'état avec l'article sélectionné
         setSelectedArticle({
           id: response.data.id,
-          name: response.data.articleNom,
-          depot: response.data.depotNom,
+          name: response.data.articleId,
+          depot: response.data.depotId,
           date: response.data.datePeremption,
           quantite: response.data.qte,
         });
@@ -186,7 +202,7 @@ const Table = () => {
             className="text-sm font-medium px-3 py-1.5 rounded-lg bg-blue-700 text-white"
             type="button"
           >
-            Ajouter un Article
+            Ajouter un Stock
           </button>
         </div>
 
